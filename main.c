@@ -1,6 +1,6 @@
 
 /**
- * The CDECL macro is used to force the compiler to chose the cdecl calling
+ * The CDECL macro is used to force the compiler to choose the cdecl calling
    convention. http://en.wikipedia.org/wiki/X86_calling_conventions#cdecl 
  */
 #ifdef __GNUC__
