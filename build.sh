@@ -1,6 +1,11 @@
 #!/bin/bash
-make clean && make
-mkdir test
-sudo mount floppy.img test
-sudo cp kernel test/kernel
-sudo umount test
+MOUNTPOINT=mountpint
+KERNEL=kernel
+IMG=floppy.img
+make
+if [ ! -e $MOUNTPOINT ] ; then
+    mkdir $MOUNTPOINT
+fi
+sudo mount $IMG $MOUNTPOINT
+sudo cp $KERNEL $MOUNTPOINT/$KERNEL
+sudo umount $MOUNTPOINT

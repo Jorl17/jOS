@@ -8,14 +8,15 @@ SOURCES=start.o main.o
 CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32
 LDFLAGS=-Tlink.ld -melf_i386
 ASFLAGS=-felf
+KERNEL=kernel
 
-all: $(SOURCES) link 
+all: $(KERNEL) 
 
 clean:
-	rm *.o kernel
+	rm *.o $(KERNEL)
 
-link:
-	ld $(LDFLAGS) -o kernel $(SOURCES)
+$(KERNEL): $(SOURCES)
+	ld $(LDFLAGS) -o $(KERNEL) $(SOURCES)
 
 .s.o:
 	nasm $(ASFLAGS) $<
