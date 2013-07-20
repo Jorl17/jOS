@@ -18,6 +18,10 @@ void screen_puthex(uint32_t n);
 /* Print decimal number */
 void screen_put_int(uint32_t n);
 
+/* Set fg and bg colors */
+void set_fg_color(uint8_t c);
+void set_bg_color(uint8_t c);
+
 #define VGA_BLACK           0
 #define VGA_BLUE            1
 #define VGA_GREEN           2
@@ -53,7 +57,7 @@ void screen_put_int(uint32_t n);
 #define FG_YELLOW          FG_FROM_COLOR(VGA_YELLOW)
 #define FG_WHITE           FG_FROM_COLOR(VGA_WHITE)
 
-#define BG_FROM_COLOR(x)   ( (x) << 16 )      
+#define BG_FROM_COLOR(x)   ( (x) << 12 )      
 #define BG_BLACK           BG_FROM_COLOR(VGA_BLACK)
 #define BG_BLUE            BG_FROM_COLOR(VGA_BLUE)
 #define BG_GREEN           BG_FROM_COLOR(VGA_GREEN)

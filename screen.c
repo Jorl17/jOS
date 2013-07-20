@@ -10,6 +10,22 @@
 uint16_t* vmem = (uint16_t*) 0xB8000;
 uint8_t cursor_x = 0, cursor_y = 0;
 
+uint16_t fg_mask = FG_COLOR;
+uint16_t bg_mask = BG_COLOR;
+#define BLANK (' ' | fg_mask | bg_mask)
+
+void set_fg_color(uint8_t c)
+{
+  /* FIXME: Assert the color */
+  fg_mask = FG_FROM_COLOR(c);
+}
+
+void set_bg_color(uint8_t c)
+{
+  /* FIXME: Assert the color */
+  bg_mask = BG_FROM_COLOR(c);
+}
+
 #define VIDEO_XY(x,y) vmem[ (x) + (y)*SCREEN_W ]
 
 PRIVATE void update_cursor_pos()
@@ -24,8 +40,6 @@ PRIVATE void update_cursor_pos()
 /* Scrolls the text on the screen up by one line. */
 PRIVATE void scroll()
 { 
-  uint16_t blank = ' ' | FG_COLOR | BG_COLOR; 
-
   /* Row 25 is the end, this means we need to scroll up */
   if(cursor_y >= SCREEN_H)
   {
@@ -38,11 +52,18 @@ PRIVATE void scroll()
 
     /* The last line should now be blank. Clear it */
     for (i = last_line_offset; i < SCREEN_W*SCREEN_H; i++)
-      vmem[i] = blank;
+      vmem[i] = BLANK;
 
     /* The cursor should now be on the last line. */
     cursor_y = SCREEN_H-1;
   }
+}
+
+void screen_clear(void)
+{
+  int i;
+  for ( i = 0 ; i < SCREEN_W*SCREEN_H; i++)
+    vmem[i] = BLANK;
 }
 
 void screen_putc(char c)
@@ -53,7 +74,7 @@ void screen_putc(char c)
     cursor_x--;
 
   /* Handle a tab by increasing the cursor's X, but only to a point
-     here it is divisible by 8. */
+     where it is divisible by 8. */
   else if (c == '\t')
     cursor_x = (cursor_x+TAB_WIDTH) & ~(TAB_WIDTH-1);
 
@@ -71,7 +92,7 @@ void screen_putc(char c)
   /* Handle any other printable character. */
   else if(c >= ' ')
   {
-      VIDEO_XY(cursor_x,cursor_y) = c | FG_COLOR | BG_COLOR;
+      VIDEO_XY(cursor_x,cursor_y) = c | fg_mask | bg_mask;
       cursor_x++;
   }
 
@@ -87,4 +108,10 @@ void screen_putc(char c)
   scroll();
   /* Move the hardware cursor. */
   update_cursor_pos();
+}
+
+void screen_puts(char* c)
+{
+    while (*c)
+      screen_putc(*c++);
 }

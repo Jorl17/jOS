@@ -17,10 +17,10 @@ KERNEL=kernel
 
 CC=gcc #gcc or clang...or something completely different!
 
-all: $(KERNEL) 
+all: $(KERNEL) 	
 
 clean:
-	rm *.o $(KERNEL)
+	rm $(SOURCES) $(KERNEL)
 
 $(KERNEL): $(SOURCES) link.ld
 	ld $(LDFLAGS) -o $(KERNEL) $(SOURCES)
