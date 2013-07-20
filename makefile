@@ -3,13 +3,14 @@
 # The only one that needs changing is the assembler 
 # rule, as we use nasm instead of GNU as.
 
-SOURCES=start.o main.o
+SOURCES=start.o main.o x86/x86.o screen.o
 
 # Optimizing is always dangerous...
 OPTIMIZATION_FLAGS=#-O3 -funroll-loops
 
 AGGRESSIVE_FLAGS=-Wall -Wextra -ansi -pedantic -pedantic-errors -Werror -D__JOS_PEDANTIC
-CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32 $(AGGRESSIVE_FLAGS) $(OPTIMIZATION_FLAGS)
+INCLUDES=-Ix86/ -I.
+CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32 $(AGGRESSIVE_FLAGS) $(OPTIMIZATION_FLAGS) $(INCLUDES)
 LDFLAGS=-Tlink.ld -melf_i386
 ASFLAGS=-felf
 KERNEL=kernel
