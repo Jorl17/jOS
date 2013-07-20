@@ -27,7 +27,7 @@ PRIVATE void scroll()
   uint16_t blank = ' ' | FG_COLOR | BG_COLOR; 
 
   /* Row 25 is the end, this means we need to scroll up */
-  if(cursor_y >= 25)
+  if(cursor_y >= SCREEN_H)
   {
     int last_line_offset = SCREEN_W*(SCREEN_H-1);
     /* Move the current text chunk that makes up the screen
@@ -41,7 +41,7 @@ PRIVATE void scroll()
       vmem[i] = blank;
 
     /* The cursor should now be on the last line. */
-    cursor_y = 24;
+    cursor_y = SCREEN_H-1;
   }
 }
 
