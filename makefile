@@ -3,7 +3,7 @@
 # The only one that needs changing is the assembler 
 # rule, as we use nasm instead of GNU as.
 
-SOURCES=start.o main.o x86/x86.o screen.o
+SOURCES=start.o main.o x86/x86.o screen.o gdt.o gdt_s.o
 
 # Optimizing is always dangerous...
 OPTIMIZATION_FLAGS=#-O3 -funroll-loops

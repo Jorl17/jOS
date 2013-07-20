@@ -24,4 +24,6 @@
 
 #define PRIVATE static
 
+#include <types.h>
+
 #endif

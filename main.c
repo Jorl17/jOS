@@ -1,5 +1,6 @@
 #include <stdinc.h>
 #include <screen.h>
+#include <gdt.h>
 /*
  * Kernel entry point
  */
@@ -12,5 +13,10 @@ int CDECL kernel_main(void* mboot_ptr)
   screen_puts("Yellow!!\n");
   set_bg_color(VGA_BLUE);
   screen_puts("Yellow on blue!!\n");
+  set_fg_color(VGA_WHITE);  set_bg_color(VGA_BLACK);
+
+  init_gdt();
+  screen_puts("GDT Started.\n");  
+  
   return 0xDEADBABA; /* Should be in $eax right now */
 }
