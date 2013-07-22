@@ -13,10 +13,10 @@ void screen_clear();
 void screen_puts(char *c);
 
 /* Print hex number */
-void screen_puthex(uint32_t n);
+void screen_put_hex(uint32_t n);
 
 /* Print decimal number */
-void screen_put_int(uint32_t n);
+void screen_put_int(int32_t n);
 
 /* Set fg and bg colors */
 void set_fg_color(uint8_t c);

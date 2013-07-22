@@ -19,8 +19,8 @@ void init_gdt ()
   gdt_ptr.base = (uint32_t) &gdt_entries;       
 
   gdt_set_gate (0, 0, 0, 0, 0);                                                     /* Null segment. */
-  gdt_set_gate (1, FLATMODEL_BASE, FLATMODEL_LIMIT, CODE_SELECTOR, FLATMODEL_PRIV); /* Code segment. */
-  gdt_set_gate (2, FLATMODEL_BASE, FLATMODEL_LIMIT, DATA_SELECTOR, FLATMODEL_PRIV); /* Data segment. */
+  gdt_set_gate (1, FLATMODEL_BASE, FLATMODEL_LIMIT, CODE_SELECTOR, FLATMODEL_GRAN); /* Code segment. */
+  gdt_set_gate (2, FLATMODEL_BASE, FLATMODEL_LIMIT, DATA_SELECTOR, FLATMODEL_GRAN); /* Data segment. */
 
   gdt_set ((uint32_t) &gdt_ptr);
 }

@@ -1,4 +1,5 @@
 #include <screen.h>
+#include <mem.h>
 
 #define FG_COLOR FG_WHITE
 #define BG_COLOR BG_BLACK
@@ -114,4 +115,30 @@ void screen_puts(char* c)
 {
     while (*c)
       screen_putc(*c++);
+}
+
+void screen_put_int(int32_t n)
+{
+        char array[] = "0123456789";
+        if ( n < 0 ) {
+                screen_putc('-');
+                n = -n;
+        }
+        
+        do {
+                screen_putc ( array[n % 10 ] );
+                n /= 10;
+        } while ( n > 0 );
+}
+
+void screen_put_hex(uint32_t n)
+{
+        char array[] = "0123456789ABCDEF";
+        
+        screen_puts("0x");
+        
+        do {
+                screen_putc ( array[n % 16 ] );
+                n /= 16;
+        } while ( n > 0 );
 }

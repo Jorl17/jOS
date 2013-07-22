@@ -68,14 +68,14 @@ typedef struct
 */
 
 /*       Pr   R 1 E D/C RW A */
-/* Code: 1  000 1 1 0   1  0 */
-/* Data: 1  000 1 0 0   1  0 */
+/* Code: 1  000 1 1 0   1  0 --> 0x9A*/
+/* Data: 1  000 1 0 0   1  0 --> 0x92*/
 #define CODE_SELECTOR 0x9A
 #define DATA_SELECTOR 0x92
 
 /*                   G D 0 A SegLen */
-/* Flat-Model Priv:  1 1 0 1   1111 */
-#define FLATMODEL_PRIV  0xCF
+/* Flat-Model Priv:  1 1 0 1   1111 --> 0xCF*/
+#define FLATMODEL_GRAN  0xCF
 #define FLATMODEL_BASE  0x0
 #define FLATMODEL_LIMIT 0xFFFFF
 

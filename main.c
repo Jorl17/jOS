@@ -1,6 +1,7 @@
 #include <stdinc.h>
 #include <screen.h>
 #include <gdt.h>
+#include <idt.h>
 /*
  * Kernel entry point
  */
@@ -17,6 +18,11 @@ int CDECL kernel_main(void* mboot_ptr)
 
   init_gdt();
   screen_puts("GDT Started.\n");  
+  
+  init_idt();
+  screen_puts("IDT Loaded.\n");
+  __asm("int $0x3");
+  screen_puts("Alive!\n");
   
   return 0xDEADBABA; /* Should be in $eax right now */
 }
