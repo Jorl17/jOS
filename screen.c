@@ -1,5 +1,4 @@
 #include <screen.h>
-#include <mem.h>
 
 #define FG_COLOR FG_WHITE
 #define BG_COLOR BG_BLACK
