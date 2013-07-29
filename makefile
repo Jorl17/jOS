@@ -11,11 +11,16 @@ OPTIMIZATION_FLAGS=#-O3 -funroll-loops
 AGGRESSIVE_FLAGS=-Wall -Wextra -ansi -pedantic -pedantic-errors -Werror -D__JOS_PEDANTIC
 INCLUDES=-Ix86/ -I.
 CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32 $(AGGRESSIVE_FLAGS) $(OPTIMIZATION_FLAGS) $(INCLUDES)
-LDFLAGS=-Tlink.ld -melf_i386
+LDFLAGS=-Tlink.ld -m32 -melf_i386
 ASFLAGS=-felf
 KERNEL=kernel
 
-CC=gcc #gcc or clang...or something completely different!
+#CC=gcc #gcc or clang...or something completely different!
+CC=gcc
+
+LD=ld
+#LD=ld-4.8
+#LD=gcc
 
 all: $(KERNEL) 	
 
@@ -23,7 +28,7 @@ clean:
 	rm $(SOURCES) $(KERNEL)
 
 $(KERNEL): $(SOURCES) link.ld
-	ld $(LDFLAGS) -o $(KERNEL) $(SOURCES)
+	$(LD) $(LDFLAGS) -o $(KERNEL) $(SOURCES)
 
 .s.o:
 	nasm $(ASFLAGS) $<
