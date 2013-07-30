@@ -1,2 +1,10 @@
  *.o
  kernel
+
+*.o
+
+kernel
+
+makefile~
+
+.DS_Store
