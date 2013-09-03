@@ -3,6 +3,6 @@ spawn ssh jorl17@192.168.56.151
 expect "jorl17@192.168.56.151's password:" 
 send "jOSForEver\n"
 send "echo jOSForEver | sudo -S echo Enabling sudo\n"
-send "cd jOS && make clean ; ./build.sh\n"
+send "cd jOS && make -f makefile.real clean ; ./build.sh\n"
 send "exit\n"
 interact

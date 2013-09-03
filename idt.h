@@ -83,4 +83,19 @@ typedef void (*interrupt_handler_t)(registers_t *);
 
 /* Allows us to register an interrupt handler. */
 void register_interrupt_handler (uint8_t n, interrupt_handler_t h);
+
+/* Allows us to setup an interrupt gate for use. Only after setting it up can
+ * we get interrupts. It is here for stuff like the IRQ/PIC module to be able
+ * to register its gates.
+ * 
+ * It is normally called with
+ *      sel   = IDT_SELECTOR
+ *      flags = IDT_32BIT_INTERRUPT_GATE
+ */
+void idt_set_gate (uint8_t num, uint32_t base, uint16_t sel, uint8_t flags);
+
+/* A handler for IDTs. Whenever an interrupt occurs, code should go through
+ * this
+ */
+void idt_handler (registers_t* regs);
 #endif

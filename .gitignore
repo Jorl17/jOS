@@ -8,3 +8,9 @@ kernel
 makefile~
 
 .DS_Store
+
+floppy.img
+
+*.session
+
+*.joo_ricardo_loureno

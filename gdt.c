@@ -45,4 +45,5 @@ PRIVATE void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit, uint8_t ac
     
     /* Set access flags */
     gdt_entries[num].access      = access;
+
 }

@@ -4,11 +4,11 @@ KERNEL=kernel
 IMG=floppy.img
 
 if [ "`uname`" == "Darwin" ] ; then
-	expect -f copy_to_vm.expect
+	expect -f copy_to_vm.expect 2>1 >/dev/null
 	expect -f make_in_vm.expect
-	expect -f copy_from_vm.expect
+	expect -f copy_from_vm.expect 2>1 >/dev/null
 else
-	make
+	make -f makefile.real 
 
     if [ ! -e $MOUNTPOINT ] ; then
         mkdir $MOUNTPOINT
