@@ -4,6 +4,8 @@
 #include <x86/x86.h>
 #include <screen.h>
 
+#define SHOW_KEYPRESSES
+
 PRIVATE keyboard_map_t* system_map;
 
 /* Given a VK, we access the respective index (for VK_1 we access index 3)
@@ -76,6 +78,7 @@ void keyboard_handler ( registers_t* r )
         scancode &= ~KEY_RELEASED_MASK;
         vk_code = system_map->vk_code[scancode];
         SET_KEY_UP ( key_states[vk_code] );
+        #ifdef SHOW_KEYPRESSES
         screen_puts("Key released: '");
         if (vk_code) {
             if ( vk_ascii[vk_code] )
@@ -89,11 +92,13 @@ void keyboard_handler ( registers_t* r )
                 screen_puts(" [NOT TRANSLATED]");
         }
         screen_puts("'\n");
+        #endif
     } else if ( scancode == KEY_NEED_NEXT_KEY ) {
         /* Not dealing with this yet. Includes right alt, etc.. */
     } else {
         vk_code = system_map->vk_code[scancode];
         SET_KEY_DOWN ( key_states[vk_code] );
+        #ifdef SHOW_KEYPRESSES
         screen_puts("Key pressed : '");
         if (vk_code) {
             if ( vk_ascii[vk_code] )
@@ -107,6 +112,7 @@ void keyboard_handler ( registers_t* r )
                 screen_puts(" [NOT TRANSLATED]");
         }
         screen_puts("'\n");
+        #endif
     }
 
 }
