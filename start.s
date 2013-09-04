@@ -40,6 +40,7 @@ mboot:
 start:
   ; GRUB left multiboot header pointer in ebx. Push it onto the stack.
   push    ebx                   ; Load multiboot header location
+  mov     ebp, 0                ; Start ebp with 0 so that we can do stack traces until this very spot
 
   ; Execute the kernel:
   cli                           ; Disable interrupts.

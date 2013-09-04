@@ -5,13 +5,15 @@
 #include <irq.h>
 #include <internal_timer.h>
 #include <multiboot.h>
+#include <kpanic.h>
+#include <elf.h>
 
 /*
  * Kernel entry point
  */
 int CDECL kernel_main(multiboot_t* mboot_ptr)
 {
-  UNUSED(mboot_ptr);
+  build_elf_symbols_from_multiboot(mboot_ptr);
   screen_clear();
   screen_puts("Hello World!\n");
   set_fg_color(VGA_YELLOW);
@@ -35,6 +37,6 @@ int CDECL kernel_main(multiboot_t* mboot_ptr)
   screen_puts("Timer Started!\n");
   
   __asm("sti");
-  
+  kpanic("BAJUNGA BAJUNGA!!!");
   return 0xDEADBABA; /* Should be in $eax right now */
 }
