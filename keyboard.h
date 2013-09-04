@@ -104,7 +104,7 @@ uint16_t get_key_state ( uint16_t scancode );
 #define VK_K 37
 #define VK_L 38
 #define VK_SEMICOLON 39
-#define VK_UPPERCOMA 40
+#define VK_UPPERCOMMA 40
 #define VK_APOSTROPHE 41
 #define VK_LSHIFT 42
 #define VK_BACKSLASH 43
@@ -152,5 +152,12 @@ uint16_t get_key_state ( uint16_t scancode );
 /* #define VK_ FIXME: WHAT'S HERE? */
 #define VK_F11 86
 #define VK_F12 87
+
+/* These keys do not exist as direct mappings in the US keyboard,
+ * they have no scancode (or it's a more-than-one-byte scancode)
+ * and are usually the keys that are triggered by shift, ctrl or alt, etc
+ */
+#define VK_PLUS 256
+#define LAST_VK VK_PLUS
 
 #endif

@@ -10,9 +10,19 @@ PRIVATE keyboard_map_t* system_map;
 
 /* Given a VK, we access the respective index (for VK_1 we access index 3)
  * to get that key's state (or set it) */
-PRIVATE uint8_t  key_states[128] = {0};
+PRIVATE uint8_t  key_states[LAST_VK+1] = {0};
 
-PRIVATE byte     vk_ascii[128] = {
+/*
+ * This table has the ASCII character that represents each VK.
+ * For instance, to check what ASCII character VK_A represents (that's 'a'),
+ * we'd do vk_ascii[VK_A], and we'd get the 'a'. It's the way the OS
+ * uses to map VKs to printable characters.
+ * 
+ * Do note that this table is partly filled during the initialization
+ * routine, meaning that the intialization you see directly below
+ * is only partial too.
+ */
+PRIVATE uint8_t  vk_ascii[LAST_VK+1] = {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8',	/* 9 */
     '9', '0', '-', '=', '\b',	/* Backspace */
     '\t',			/* Tab */
@@ -123,13 +133,41 @@ PRIVATE keyboard_map_t en_US_keymap = {
     {0} /* To be initialized 0 to 128 later... */
 };
 
+PRIVATE keyboard_map_t pt_PT_keymap = {
+    "pt-PT",
+
+    {0} /* To be initialized 0 to 128 later... */
+};
+
 void init_keyboard ( void )
 {
     int i;
+    
+    /* Create the VK codes for the US mapping. Given the way we built the OS,
+     * we have that the index is the VK itself. Allowing us to initialize them
+     * all in this for loop
+     */
     for ( i = 0; i < 128; i ++ )
         en_US_keymap.vk_code[i] = i;
     
-    system_map = &en_US_keymap;
+    /* The pt_PT keymap will be built by changing the en_US one, so we start
+     * by building it as if it were the en_US */
+    for ( i = 0; i < 128; i ++ )
+        pt_PT_keymap.vk_code[i] = i;
+    
+    /* Now for the changes. These keycodes were manually found by debugging */
+    pt_PT_keymap.vk_code[53] = VK_MINUS;
+    pt_PT_keymap.vk_code[13] = VK_PLUS;
+    pt_PT_keymap.vk_code[12] = VK_UPPERCOMMA;
+    
+    /* Part of the vk_ascii table is not fully initialized on start. In
+     * particular, the characters which cannot be directly typed on a US keyboard
+     * are not stored there. We have to initialize them here
+     */
+    vk_ascii[VK_PLUS] = '+';
+    
+    /* Set the system map and register our interrupt handler */
+    system_map = &pt_PT_keymap;
     register_interrupt_handler ( IRQ_1, &keyboard_handler );
 }
 
