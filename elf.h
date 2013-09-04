@@ -56,4 +56,5 @@ const char* elf_lookup_symbol_function (uint32_t addr, elf_symbols_t* elf);
 
 /* Same function as above, but for the kernel */
 const char* kernel_elf_lookup_symbol_function (uint32_t addr);
+
 #endif

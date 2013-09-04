@@ -10,7 +10,7 @@ void screen_putc(char c);
 void screen_clear();
 
 /* Output a null-terminated ASCII string to the monitor */
-void screen_puts(char *c);
+void screen_puts(const char* c);
 
 /* Print hex number */
 void screen_put_hex(uint32_t n);

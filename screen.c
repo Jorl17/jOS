@@ -110,7 +110,7 @@ void screen_putc(char c)
   update_cursor_pos();
 }
 
-void screen_puts(char* c)
+void screen_puts(const char* c)
 {
     while (*c)
       screen_putc(*c++);
