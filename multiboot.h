@@ -24,10 +24,10 @@ typedef struct
   uint32_t cmdline;
   uint32_t mods_count;
   uint32_t mods_addr;
-  uint32_t num;
+  uint32_t num;   /* ELF: Number of sections */
   uint32_t size;
-  uint32_t addr;
-  uint32_t shndx;
+  uint32_t addr;  /* ELF: Pointer to start of array of section header structures */
+  uint32_t shndx; /* ELF: Index to section .shstrtab in the ection header structures array */
   uint32_t mmap_length;
   uint32_t mmap_addr;
   uint32_t drives_length;
