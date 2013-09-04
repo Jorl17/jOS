@@ -56,7 +56,6 @@
  */
 #define IRQ_NO(x) ((x)-IRQ_0)
 
-/* 
 void init_irq(void);
 
 #endif

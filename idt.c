@@ -2,7 +2,6 @@
 #include <stdinc.h>
 #include <mem.h>
 #include <screen.h>
-#include <irq.h> /* To start the IRQs and the PIT */
 
 /* These extern directives let us access the addresses of our ASM ISR handlers. */
 extern void isr0 ();
@@ -103,8 +102,6 @@ void init_idt ()
   idt_set_gate (30, (uint32_t)isr30, IDT_SELECTOR, IDT_32BIT_INTERRUPT_GATE );
   idt_set_gate (31, (uint32_t)isr31, IDT_SELECTOR, IDT_32BIT_INTERRUPT_GATE );
 
-  init_irq();
-
   register_interrupt_handler(0,div_by_zero);
   /* Tell the CPU about our new IDT. */
   idt_set ((uint32_t)&idt_ptr);
@@ -130,7 +127,10 @@ void idt_handler (registers_t* regs)
   } else {
     screen_puts ("Unhandled interrupt: ");
     screen_put_int(regs->int_no);
+    screen_putc(' ');    
+    screen_put_hex(regs->err_code);
     screen_putc('\n');    
+    for(;;);
   }
 }
 

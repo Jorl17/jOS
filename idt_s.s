@@ -1,3 +1,8 @@
+;
+; idt.s -- contains interrupt descriptor table setup code.
+;          Based on code from Bran's kernel development tutorials.
+;          Rewritten for JamesM's kernel development tutorials.
+
 global idt_set:function idt_set.end-idt_set ; Allows the C code to call idt_flush().
 idt_set:
     mov eax, [esp+4]  ; Get the pointer to the IDT, passed as a parameter. 
@@ -58,6 +63,7 @@ ISR_NOERRCODE 28
 ISR_NOERRCODE 29
 ISR_NOERRCODE 30
 ISR_NOERRCODE 31
+ISR_NOERRCODE 255
 
 ; C function in idt.c
 extern idt_handler
@@ -65,7 +71,7 @@ extern idt_handler
 global isr_common_stub:function isr_common_stub.end-isr_common_stub
 
 ; This is our common ISR stub. It saves the processor state, sets
-; up for kernel mode segments (only later on, FIXME), calls the C-level fault handler,
+; up for kernel mode segments, calls the C-level fault handler,
 ; and finally restores the stack frame.
 isr_common_stub:
     pusha                    ; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
@@ -73,15 +79,23 @@ isr_common_stub:
     mov ax, ds               ; Lower 16-bits of eax = ds.
     push eax                 ; Save the data segment descriptor
 
-    ;FIXME: LOAD KERNEL DATA SEGMENT DESCRIPTOR HERE LATER ON (USERSPACE)
+    mov ax, 0x10             ; Load the kernel data segment descriptor
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
 
     push esp    	     ; Push a pointer to the current top of stack - this becomes the registers_t* parameter.
     call idt_handler         ; Call into our C code.
     add esp, 4		     ; Remove the registers_t* parameter.
 
-    pop ebx                  ; Pop the data segment descriptor we pushed before. FIXME: Why ebx?
-    mov ax, 0x10
-    ;FIXME: RESTORE USERSPACE DATA SEGMENT DESCRIPTOR HERE LATER ON (USERSPACE)
+    pop ebx                  ; Reload the original data segment descriptor
+    mov ds, bx
+    mov es, bx
+    mov fs, bx
+    mov gs, bx
+    mov ss, bx
 
     popa                     ; Pops edi,esi,ebp...
     add esp, 8               ; Cleans up the pushed error code and pushed ISR number
