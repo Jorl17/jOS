@@ -116,28 +116,48 @@ void screen_puts(char* c)
       screen_putc(*c++);
 }
 
+PRIVATE void fast_string_reverse (char* s, uint32_t len) {
+    char* end = s+len-1;
+    char tmp;
+    for ( ; s < end ; s++, end--) {
+        tmp = *s; *s = *end; *end = tmp;
+    }
+        
+}
+
 void screen_put_int(int32_t n)
 {
         char array[] = "0123456789";
+        char str[30]={0};
+        char* p = str;
+        
         if ( n < 0 ) {
-                screen_putc('-');
+                *p++ = '-';
                 n = -n;
         }
         
         do {
-                screen_putc ( array[n % 10 ] );
+                *p++ = array[ n % 10 ];
                 n /= 10;
         } while ( n > 0 );
+        
+        fast_string_reverse(str, p-str);
+        screen_puts(str);
 }
 
 void screen_put_hex(uint32_t n)
 {
         char array[] = "0123456789ABCDEF";
+        char str[30]={0};
+        char* p = str;
         
         screen_puts("0x");
         
         do {
-                screen_putc ( array[n % 16 ] );
+                *p++ = array[ n % 16 ];
                 n /= 16;
         } while ( n > 0 );
+        
+        fast_string_reverse(str, p-str);
+        screen_puts(str);
 }
