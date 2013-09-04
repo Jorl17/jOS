@@ -4,8 +4,8 @@
 #include <screen.h>
 
 /* FIXME: Maybe 64? */
-uint32_t num_ticks = 0;
-uint32_t sysfrequency_hz = PIT_DEFAULT_FREQ;
+PRIVATE uint32_t num_ticks = 0;
+PRIVATE uint32_t sysfrequency_hz = PIT_DEFAULT_FREQ;
 
 PRIVATE void timer_callback ( registers_t* regs );
 
@@ -36,6 +36,9 @@ void init_timer ( uint32_t frequency )
 {
     uint32_t divisor;
     uint8_t l, h;
+    
+    sysfrequency_hz = frequency;
+    
     /* Start by registering the new interrupt handler */
     register_interrupt_handler ( IRQ_0, &timer_callback );
 
