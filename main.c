@@ -7,6 +7,7 @@
 #include <multiboot.h>
 #include <kpanic.h>
 #include <elf.h>
+#include <keyboard.h>
 
 /*
  * Kernel entry point
@@ -36,7 +37,9 @@ int CDECL kernel_main(multiboot_t* mboot_ptr)
   
   screen_puts("Timer Started!\n");
   
+  init_keyboard();
+  
+  
   __asm("sti");
-  kpanic("BAJUNGA BAJUNGA!!!");
   return 0xDEADBABA; /* Should be in $eax right now */
 }

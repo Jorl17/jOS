@@ -103,9 +103,6 @@ void init_irq(void)
 /* This gets called from our ASM interrupt handler stub. */
 void irq_handler(registers_t* regs)
 {
-    /* FIXME: Temporary, because we were getting IRQ_1 interrupts (keyboard) */
-    if (regs->int_no == IRQ_1)
-        return;
    idt_handler(regs);
 
    PIC_eoi(IRQ_NO(regs->int_no));
