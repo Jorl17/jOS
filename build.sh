@@ -4,9 +4,9 @@ KERNEL=kernel
 IMG=floppy.img
 
 if [ "`uname`" == "Darwin" ] ; then
-	expect -f copy_to_vm.expect 2>1 >/dev/null
+	expect -f copy_to_vm.expect >/dev/null
 	expect -f make_in_vm.expect
-	expect -f copy_from_vm.expect 2>1 >/dev/null
+	expect -f copy_from_vm.expect >/dev/null
 else
 	make -f makefile.real 
 
