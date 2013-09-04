@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="jOS" InternalType="">
+  <Reconciliation>
+    <Regexes/>
+    <Excludepaths/>
+    <Ignorefiles/>
+    <Extensions>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;s;real]]>
+    </Extensions>
+    <Topleveldir>../jOS</Topleveldir>
+  </Reconciliation>
   <Description/>
   <Dependencies/>
   <Settings Type="Dynamic Library">
@@ -107,12 +116,14 @@
     <File Name="build.sh"/>
     <File Name="kernel"/>
     <File Name="makefile"/>
-    <File Name="makefile~"/>
     <File Name="run.sh"/>
     <File Name="run_bochs.sh"/>
     <File Name="irq.c"/>
     <File Name="makefile.real"/>
     <File Name="irq.h"/>
+    <File Name="internal_timer.c"/>
+    <File Name="internal_timer.h"/>
+    <File Name="irq_s.s"/>
   </VirtualDirectory>
   <VirtualDirectory Name="x86">
     <File Name="x86/x86.c"/>

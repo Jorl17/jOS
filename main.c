@@ -2,6 +2,9 @@
 #include <screen.h>
 #include <gdt.h>
 #include <idt.h>
+#include <irq.h>
+#include <internal_timer.h>
+
 /*
  * Kernel entry point
  */
@@ -21,8 +24,16 @@ int CDECL kernel_main(void* mboot_ptr)
   
   init_idt();
   screen_puts("IDT Loaded.\n");
-  __asm("int $0x3");
-  screen_puts("Alive!\n");
+  
+  init_irq();
+  
+  screen_puts("IRQ Started!\n");
+  
+  init_timer(1000);
+  
+  screen_puts("Timer Started!\n");
+  
+  __asm("sti");
   
   return 0xDEADBABA; /* Should be in $eax right now */
 }
