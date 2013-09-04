@@ -14,7 +14,7 @@
  * vk_code[5] to retrieve the respective VK.
  *
  * For instance, if a keyboard_map intends to map scancode 10 to the letter A,
- * one only needs to make sure tht vk_code[5] = VK_A.
+ * one only needs to make sure tht vk_code[10] = VK_A.
  *
  * The VKs were setup in such a way that their numbers match the scancodes
  * of the en-US layout when in "Scan Code Set 1". This is useful because
@@ -27,8 +27,8 @@
  * might be used. Right now, it's all done in  init_keyboard()
  *
  * We also provide a get_key_state function which returns a 16-bit
- * value which gives us the state of the requested key (given by a VK),
- * as well as all the modifiers (ALT, CTRL, SHIFT, CAPS). This, it is
+ * value that gives us the state of the requested key (given by a VK),
+ * as well as all the modifiers (ALT, CTRL, SHIFT, CAPS). Thus, it is
  * a simple bitfield.
  *
  * For instance, to check if the letter A is pressed, one must only do:

@@ -18,7 +18,7 @@ PRIVATE uint8_t  key_states[LAST_VK+1] = {0};
  * we'd do vk_ascii[VK_A], and we'd get the 'a'. It's the way the OS
  * uses to map VKs to printable characters.
  * 
- * Do note that this table is partly filled during the initialization
+ * Do note that this table is partially filled during the initialization
  * routine, meaning that the intialization you see directly below
  * is only partial too.
  */
@@ -172,7 +172,7 @@ void init_keyboard ( void )
 }
 
 uint16_t get_key_state(uint16_t scancode) {
-    uint16_t flags = 0;
+    uint16_t flags = key_states[scancode];
     if ( ALT_PRESSED() )
         flags |= ALT_FLAG;
     
@@ -185,5 +185,5 @@ uint16_t get_key_state(uint16_t scancode) {
     if ( CAPS_ON() )
         flags |= CAPS_FLAG;
         
-    return flags | key_states[scancode];
+    return flags;
 }
