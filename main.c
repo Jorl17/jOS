@@ -4,11 +4,12 @@
 #include <idt.h>
 #include <irq.h>
 #include <internal_timer.h>
+#include <multiboot.h>
 
 /*
  * Kernel entry point
  */
-int CDECL kernel_main(void* mboot_ptr)
+int CDECL kernel_main(multiboot_t* mboot_ptr)
 {
   UNUSED(mboot_ptr);
   screen_clear();

@@ -124,6 +124,7 @@
     <File Name="internal_timer.c"/>
     <File Name="internal_timer.h"/>
     <File Name="irq_s.s"/>
+    <File Name="multiboot.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="x86">
     <File Name="x86/x86.c"/>
