@@ -11,7 +11,7 @@ PRIVATE elf_symbols_t kernel_elf_symbols;
  * Then it's just a matter of iterating sections (checking their names via indexing
  * shstrtab) until we find strtab and symtab, which is what we're looking for
  */
-void build_elf_symbols_from_multiboot ( multiboot_t *mb )
+void build_elf_symbols_from_multiboot ( multiboot_t* mb )
 {
     uint32_t i;
     elf_section_header_t* sh = ( elf_section_header_t* ) mb->addr;
