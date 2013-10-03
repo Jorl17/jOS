@@ -7,7 +7,7 @@
 #define TAB_WIDTH 8
 
 /* The VGA framebuffer starts at 0xB8000. */
-uint16_t* vmem = (uint16_t*) 0xB8000;
+uint16_t* vmem = (uint16_t*) /*0xB8000*/ 0xC00B8000;
 uint8_t cursor_x = 0, cursor_y = 0;
 
 uint16_t fg_mask = FG_COLOR;
