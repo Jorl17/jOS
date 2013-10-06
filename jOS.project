@@ -5,7 +5,7 @@
     <Excludepaths/>
     <Ignorefiles/>
     <Extensions>
-      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;s;real]]>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp;s;real;ld;expect]]>
     </Extensions>
     <Topleveldir>../jOS</Topleveldir>
   </Reconciliation>
@@ -125,6 +125,18 @@
     <File Name="internal_timer.h"/>
     <File Name="irq_s.s"/>
     <File Name="multiboot.h"/>
+    <File Name="copy_from_vm.expect"/>
+    <File Name="copy_to_vm.expect"/>
+    <File Name="elf.c"/>
+    <File Name="elf.h"/>
+    <File Name="keyboard.c"/>
+    <File Name="keyboard.h"/>
+    <File Name="kpanic.c"/>
+    <File Name="kpanic.h"/>
+    <File Name="link.ld"/>
+    <File Name="make_in_vm.expect"/>
+    <File Name="string.c"/>
+    <File Name="string.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="x86">
     <File Name="x86/x86.c"/>
@@ -132,5 +144,11 @@
   </VirtualDirectory>
   <VirtualDirectory Name="mountpoint">
     <File Name="mountpoint/kernel"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="mem">
+    <File Name="mem/pmm.c"/>
+    <File Name="mem/pmm.h"/>
+    <File Name="mem/vmm.c"/>
+    <File Name="mem/vmm.h"/>
   </VirtualDirectory>
 </CodeLite_Project>
