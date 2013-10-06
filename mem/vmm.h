@@ -11,7 +11,7 @@
  * 
  * WHAT DOES PAGING DO?
  * Paging is used both for virtual memory as a way to map virtual addresses to
- * physical addresses, and as a way to established privileged sections of memory
+ * physical addresses, and as a way to establishe privileged sections of memory
  * where only certain priviliged (kernel-mode) code can operate.
  * 
  * When we speak of virtual addresses and physical addresses, we mean that
@@ -46,7 +46,7 @@
  * We've stated that one of the functions of paging is mapping virtual addresses
  * to physical addresses. The x86 does this by these blocks called pages. It
  * doesn't map one address to another -- it maps 4kb blocks to other 4kb blocks.
- * So it might map the 0x0-0x1000 region to the 0xA00000-0xA0100 region, but not its
+ * So it might map the 0x0-0x1000 region to the 0xA00000-0xA01000 region, but not its
  * individual addresses. In this context, when we talk about the physical groups
  * of 4kb, we call them Frames or Page Frames. A Page Frame is a group of 4kbytes
  * aligned on a 4kbyte boundary in physical memory -- one of those blocks we
@@ -60,7 +60,7 @@
  * access, and frames are the ones that pages are mapped to. When we we
  * map 0xB0000000 to 0x0, we map the page starting at 0xB0000000 to the
  * frame at 0x0. Each page has an associated frame that it maps to, but
- * some frames might be left comletely unmapped -- and notice that many
+ * some frames might be left completely unmapped -- and notice that many
  * pages can map to the same frame at once!
  * 
  * As for the privilege needs, the x86 allows us to define the priviliged
@@ -122,10 +122,10 @@
  * frame that address is mapped to, and where CCCCCCCCCCCC gives us the offset
  * to that address. The difference to intel's method is that they divided
  * the AAAAAAAAAAAAAAAAAAAA bit further more, but it's still the same logic:
- * You take an address, find the frame to which it belongs to (using the most
- * signifficant bits, which you can do because frames are 4kb on a 4kb boundary,
+ * You take an address, find the frame to which it belongs (using the most
+ * significant bits, which you can do because frames are 4kb on a 4kb boundary,
  * so the CCCCCCCCCCCC part is always 0 at the beginning of a frame), then you
- * add the offset to it. The offset a virtual address to page X is the same
+ * add the offset to it. The offset of a virtual address to page X is the same
  * as the offset of the corresponding physical address to the corresponding
  * frame.
  * 
@@ -137,7 +137,7 @@
  * pointers to Frames. The PDEs (Page Directory Entries) and PTEs (Page Table
  * Entries) do more than just that! Besides the pointers, they use their bits
  * to define access priviliges, as well as some Intel options related to caching..
- * and we can eve use some leftover bits for our own house-keeping!
+ * and we can even use some leftover bits for our own house-keeping!
  * 
  * Let's now take a look at these structures more carefully.
  * 
