@@ -1,9 +1,13 @@
 #!/bin/bash
 IMG=floppy.img
 OPTIRUN=""
-if [ ! -z `which optirun` ] ; then
-    OPTIRUN=optirun
+QEMU="qemu"
+if [ ! -x "`which $QEMU`" ] ; then
+        QEMU="qemu-system-x86_64"
+fi        
+if [ -x "`which optirun`" ] ; then
+    echo "FIXME: No Optirun"; #OPTIRUN=optirun
 fi
 sudo /sbin/losetup /dev/loop0 $IMG
-sudo $OPTIRUN qemu -fda /dev/loop0 -boot a
+sudo $OPTIRUN $QEMU -fda /dev/loop0 -boot a
 sudo /sbin/losetup -d /dev/loop0 

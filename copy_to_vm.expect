@@ -1,0 +1,5 @@
+#!/usr/bin/expect -f
+spawn scp -r ./ jorl17@192.168.56.151:/home/jorl17/jOS/
+expect "jorl17@192.168.56.151's password:" 
+send "jOSForEver\r"
+interact

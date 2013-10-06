@@ -1,2 +1,16 @@
  *.o
  kernel
+
+*.o
+
+kernel
+
+makefile~
+
+.DS_Store
+
+*.session
+
+*.joo_ricardo_loureno
+
+jOS.tags
