@@ -12,4 +12,7 @@ typedef uint8_t        byte;
 typedef uint16_t       word;
 typedef uint32_t       dword;
 
+typedef byte           bool;
+#define false          0
+#define true           (!false)
 #endif
