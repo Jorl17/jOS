@@ -6,7 +6,10 @@
 ;   should start running code.
 ; * Using only position-independent code, setup a higher-half kernel. That is,
 ;   a kernel which lives above the 2 GB barrier. Specifically, our higher-half
-;   kernel is a 3/1 kernel, residing at 0xC0000000
+;   kernel is a 3/1 kernel, residing at 0xC0100000 (technically a 3/1 resides
+;   at 0xC0000000, but keep reading for why we chose this address)
+; * Map a region of memory (0xB0000000) to itself, so it can later be used by
+;   the PMM (Physical Memory Manager) for memory management (also see pmm.h)
 ; * Setting up a new stack for our kernel
 ; * Jump to kernel_main and pass it a grub info structure
 ;
@@ -100,6 +103,7 @@
 ;
 ; ----------------------------------------------------------------------------
 ;
+;
 ; Useful Magic macros
 MBOOT_PAGE_ALIGN    equ 1<<0       ; Load kernel and modules on a page boundary
 MBOOT_MEM_INFO      equ 1<<1       ; Provide your kernel with memory info
@@ -117,6 +121,14 @@ MBOOT_CHECKSUM      equ -(MBOOT_HEADER_MAGIC + MBOOT_HEADER_FLAGS)
 KERNEL_VIRTUAL_BASE equ 0xC0000000                  ; 3GB
 KERNEL_PAGE_NUMBER equ (KERNEL_VIRTUAL_BASE >> 22)  ; Page directory index of kernel's 4MB PTE.
  
+; The PMM will be expecting 0xB0000000 to be mapped, and in fact, indetity-mapped,
+; to do its work, so we have to do it here. Do note that the only reason
+; why it needs to be identity-mapped is because the VMM needs the PMM to
+; give it physical addresses (so as to use them in Page Directories and Page Tables).
+
+PMM_VIRTUAL_BASE equ 0xB0000000               
+PMM_PAGE_NUMBER equ (PMM_VIRTUAL_BASE >> 22)  ; Page directory index of kernel's 4MB PTE.
+  
 ; Since we're moving up to 0xC0100000, we're going to need to set our stack there
 ; as well. Thus, we're going to create our own stack, and it will be 0x4000 bytes long,
 ; that is 16k
@@ -145,14 +157,15 @@ BootPageDirectory:
     ; enabled because it can't fetch the next instruction! It's ok to unmap this page later.
     dd 0x00000083
     
-    ; Now add null pages until we reach the page where our kernel will live, and
+    ; Add null pages until we reach the PMM page number
+    times (PMM_PAGE_NUMBER - 1) dd 0                       ; Pages before PMM space.
+    dd 0xB0000083     ; This page directory entry identity-maps the 4MB starting at 0xB0000000
+    
+    ; Null pages until we reach the page where our kernel will live, and
     ; which we'll have to map. FIXME: If the kernel ever gets really big (bigger than 4MB),
     ; It might be left unmapped!!
-    
-    
-    times (KERNEL_PAGE_NUMBER - 1) dd 0                 ; Pages before kernel space.
-    ; This page directory entry defines a 4MB page containing the kernel.
-    dd 0x00000083
+    times (KERNEL_PAGE_NUMBER - PMM_PAGE_NUMBER - 1) dd 0  ; Pages before kernel space.
+    dd 0x00000083     ; This page directory entry defines a 4MB page containing the kernel.
     
     ; Add the remaining pages until we've filled the Page Directory
     ; (Remember a page directory is an array of 1024 page tables)
