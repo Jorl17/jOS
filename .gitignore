@@ -14,3 +14,7 @@ makefile~
 *.joo_ricardo_loureno
 
 jOS.tags
+
+.idea/*
+
+out/*

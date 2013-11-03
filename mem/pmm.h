@@ -37,6 +37,20 @@ uint32_t pmm_alloc_blocks ( uint32_t n );
 /* Frees a block/page, returning it to the PMM */
 void pmm_free_block ( uint32_t b );
 
+/* This function does almost the same the same as the above, but it is meant
+ * to be used whenever we want to give a block/page to the PMM.
+ * In particular, after VMM has been setup, the PMM has no pages to
+ * work with, and any call to pmm_alloc_block will trigger an out
+ * of memory warning. We should make sure that the PMM has free blocks
+ * by adding all free blocks we can find to it.
+ * 
+ * Since it's only meant to give blocks back, it doesn't check if you're
+ * trying to free an important block
+ */
+void pmm_give_block ( uint32_t b );
+
+void pmm_initial_free_page_setup_HACK(void);
+
 /* Used by the VMM to notify the PMM of paging changes
  * Do note that our kernel already boots with paging enabled
  * (see start.s). What we mean by "paging enabled" here is if the kernel

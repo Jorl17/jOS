@@ -72,7 +72,10 @@ int CDECL kernel_main ( multiboot_t* mboot_ptr )
     ptr += 1024 * 1024 - 1;
     screen_put_hex ( *ptr );
     screen_puts ( "\n" );
-
+    
+/*    pmm_initial_free_page_setup_HACK();*/
+/*    screen_put_hex ( pmm_alloc_block() );*/
+    screen_puts ( "\n" );
     __asm ( "sti" );
     for ( ;; ); /* NOTE: Never return from kernel, We'll segfault */
     return 0xDEADBABA; /* Should be in $eax right now */
