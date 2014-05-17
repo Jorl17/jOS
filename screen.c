@@ -130,10 +130,12 @@ void screen_put_int(int32_t n)
         char array[] = "0123456789";
         char str[30]={0};
         char* p = str;
+        int neg = 0;
         
         if ( n < 0 ) {
                 *p++ = '-';
                 n = -n;
+                neg = 1;
         }
         
         do {
@@ -141,7 +143,7 @@ void screen_put_int(int32_t n)
                 n /= 10;
         } while ( n > 0 );
         
-        fast_string_reverse(str, p-str);
+        fast_string_reverse(str+neg, p-str-neg);
         screen_puts(str);
 }
 
