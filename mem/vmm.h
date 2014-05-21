@@ -1,6 +1,7 @@
 #ifndef VMM_H
 #define VMM_H
 #include <stdinc.h>
+#include "multiboot.h"
 /* NOTE: See pmm.h's documentation first!
  * 
  * Our VMM is a somehwat complex piece of programming responsible for managing
@@ -442,7 +443,9 @@ void vmm_flush_tlb_entry ( uint32_t addr );
  * complex process which can be transparently done with it. */
 void vmm_map_page ( uint32_t phys, uint32_t virt );
 
+void vmm_identity_map (uint32_t start_addr, uint32_t map_length);
+
 /* The all mighty function to initialize the VMM. See vmm.c to know
  * what the VMM does when it starts up */
-void init_vmm ();
+void init_vmm(multiboot_t*mboot_ptr);
 #endif

@@ -1,5 +1,7 @@
 #include "vmm.h"
 #include "pmm.h"
+#include "multiboot.h"
+#include "elf.h"
 #include <string.h>
 #include <kpanic.h>
 #include <screen.h>
@@ -27,6 +29,8 @@
  */
 
 PRIVATE page_directory* vmm_current_directory;
+
+PRIVATE void vmm_identity_map_kernel_symbols_and_grub(multiboot_t* mboot_ptr);
 
 void page_table_entry_add_attrib ( page_table_entry* e, uint32_t attrib )
 {
@@ -83,7 +87,7 @@ bool page_directory_entry_is_writable ( page_directory_entry e )
 /* Fetches any page and adds it to this page table entry (thus mapping it) */
 bool vmm_alloc_page ( page_table_entry* e )
 {
-    uint32_t p = pmm_alloc_block ();
+    uint32_t p = pmm_alloc_block (true);
     if ( p == 0 )
         return false;
 
@@ -185,7 +189,7 @@ void vmm_map_page ( uint32_t phys, uint32_t virt )
     /* Check we have a page table. If we don't, create it */
     if ( !page_directory_entry_is_present ( *e ) ) {
         /* Allocate a new 4kb block where we'll store the page table */
-        table = ( page_table* ) pmm_alloc_block ();
+        table = ( page_table* ) pmm_alloc_block (true);
         memset ( table, 0, sizeof ( page_table ) );
 
         /* Mark the page table entry present, writable, and make it point to
@@ -234,6 +238,14 @@ void vmm_map_page ( uint32_t phys, uint32_t virt )
     return PAGE_GET_PHYSICAL_ADDRESS ( page ) + ( virtualaddr & 0xFFF ) ;
 }*/
 
+void vmm_identity_map (uint32_t start_addr, uint32_t map_length) {
+    uint32_t end_addr = start_addr+map_length;
+    uint32_t frame;
+
+    for ( frame = start_addr; frame < end_addr; frame += BLOCK_SIZE )
+        vmm_map_page(frame,frame);
+}
+
 /* We're going to enable paging, and we're not going to use 4MB pages.
  * We need to create a new page directory and map 0xC0000000 to
  * 0x0, as we did in the boot phase (it's the higher-half kernel). Notice
@@ -244,28 +256,52 @@ void vmm_map_page ( uint32_t phys, uint32_t virt )
  * 
  * After mapping 0xC0000000 to 0x0, we need to identity-map our PMM's working area.
  * start.s already did this, which enabled the PMM to work. We need to map them too.
- * Note that currently, the PMM lives at 0xB0000000 and grows up.
+ * Note that currently, the PMM lives at 0xD0000000 and grows up.
  * 
  * Once that's done, we switch page directory to our new page directory, disable
  * 4 MB pages and notify the PMM that 4kb-paging has been enabled.
  */
-void init_vmm ()
+void init_vmm(multiboot_t* mboot_ptr)
 {
     uint32_t frame, virt;
 
-    vmm_current_directory = ( page_directory* ) pmm_alloc_block (); /* was alloc blocks 3 */
+    vmm_current_directory = ( page_directory* ) pmm_alloc_block (true); /* was alloc blocks 3 */
     memset ( vmm_current_directory, 0, sizeof ( page_directory ) );
 
     /* Map 0xC0000000 to 0x0 for a 4MB range */
     for ( frame = 0, virt = 0xC0000000 ; frame < 0x400000; virt += 4096, frame += 4096 )
         vmm_map_page ( frame, virt );
 
-    /* Identity map the PMM for 4MB */
-    for ( frame = pmm_get_start_location(), virt = pmm_get_start_location() ; virt < pmm_get_start_location() + 0x400000; virt += 4096, frame += 4096 )
-        vmm_map_page ( frame, virt );
+    /* Identity map the PMM for 4MB, which is what we already had since boot in start.s */
+    /* Note that this isn't enabled until we switch page directory */
+    vmm_identity_map(pmm_get_start_location(), 0x400000);
 
+    /* Enable the new PD we just prepared */
     vmm_switch_page_directory ( vmm_current_directory );
+
+    /* Identity map GRUB's mboot_ptr, as well as the structures used to lookup kernel debugging symbols (shstrtab, etc) */
+    vmm_identity_map_kernel_symbols_and_grub ( mboot_ptr);
+
     vmm_disable_4mb_pages();
     vmm_enable_paging();
     pmm_notify_paging_enabled();
+}
+
+PRIVATE void vmm_identity_map_kernel_symbols_and_grub(multiboot_t* mboot_ptr)
+{
+    uint32_t i;
+    elf_section_header_t* sh;
+
+    /* Map GRUB's pointer. We use BLOCK_SIZE since grub's header will never be bigger than BLOCK_SIZE and that's the smallest
+       mapping length we can have (assuming it's aligned, which it is) */
+    vmm_identity_map((uint32_t) mboot_ptr, BLOCK_SIZE);
+
+    sh = ( elf_section_header_t* ) mboot_ptr->shdr_addr;
+    
+    /* Map the array of sections itself. There are shdr_num sections, with shdr_size size for each entry (that's what GRUB's specification seems to say) */
+    vmm_identity_map((uint32_t) sh & (~BLOCK_MASK), ((uint32_t)sh & BLOCK_MASK)+(mboot_ptr->shdr_num)*((mboot_ptr->shdr_size)));
+
+    /* Map the regions that these sections themselves point to */
+    for ( i = 0; i <= mboot_ptr->shdr_num; i++ )
+        vmm_identity_map((uint32_t) sh[i].addr & (~BLOCK_MASK), sh[i].size);
 }

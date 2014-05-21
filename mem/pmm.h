@@ -1,6 +1,7 @@
 #ifndef PMM_H
 #define PMM_H
 #include <stdinc.h>
+#include <multiboot.h> /* For mapping all the memory locations */
 /* Our Memory Management system will rely on a PMM and a VMM.
  * The PMM is the Physical Memory Manager. It manages fetching individual
  * pages and giving them to whomever needs them, generally the VMM. Once
@@ -23,11 +24,11 @@
 #define BLOCK_MASK PAGE_MASK
 #endif
 
-/* Start the PMM at address start. It will grow up */
+/* Start the PMM at address start. It will grow up. */
 void init_pmm ( uint32_t start );
 
 /* Get a free block/page */
-uint32_t pmm_alloc_block ( void );
+uint32_t pmm_alloc_block ( bool need_mapped );
 
 /* Get a group of free blocks/pages which are CONTIGUOUS
    Note that currently you can only get a contiguous block when the VMM
@@ -49,7 +50,15 @@ void pmm_free_block ( uint32_t b );
  */
 void pmm_give_block ( uint32_t b );
 
-void pmm_initial_free_page_setup_HACK(void);
+
+/**
+ * This traverses a multiboot header given to us by GRUB to find all the available physical memory
+ * and add it to the PMM.
+ *
+ * Return the number of bytes found in the machine.
+ */
+uint32_t pmm_grab_physical_memory( multiboot_t* mboot_ptr );
+
 
 /* Used by the VMM to notify the PMM of paging changes
  * Do note that our kernel already boots with paging enabled

@@ -10,60 +10,39 @@
 #include <keyboard.h>
 #include <mem/pmm.h>
 #include <mem/vmm.h>
+#include "elf.h"
+#include "multiboot.h"
 
 /*
  * Kernel entry point
  */
 int CDECL kernel_main ( multiboot_t* mboot_ptr )
 {
-    /*build_elf_symbols_from_multiboot(mboot_ptr); -- we'll get this working again later.. */
-    uint32_t* ptr;
-    UNUSED ( mboot_ptr );
+    uint32_t mem;
+
     screen_clear();
     screen_puts ( "Hello World!\n" );
 
-    set_fg_color ( VGA_YELLOW );
-    screen_puts ( "Yellow!!\n" );
-    set_bg_color ( VGA_BLUE );
-    screen_puts ( "Yellow on blue!!\n" );
-    set_fg_color ( VGA_WHITE );
-    set_bg_color ( VGA_BLACK );
+    set_fg_color ( VGA_YELLOW ); screen_puts ( "Yellow!!\n" );
+    set_bg_color ( VGA_BLUE ); screen_puts ( "Yellow on blue!!\n" );
+    set_fg_color ( VGA_WHITE ); set_bg_color ( VGA_BLACK );
 
-    init_gdt();
-    screen_puts ( "GDT Started.\n" );
-
-    init_idt();
-    screen_puts ( "IDT Loaded.\n" );
-
-    init_irq();
-
-    screen_puts ( "IRQ Started!\n" );
-
-    init_timer ( 1000 );
-
-    screen_puts ( "Timer Started!\n" );
-
+    init_gdt(); screen_puts ( "GDT Started.\n" );
+    init_idt(); screen_puts ( "IDT Loaded.\n" );
+    init_irq(); screen_puts ( "IRQ Started!\n" );
+    init_timer ( 1000 ); screen_puts ( "Timer Started!\n" );
     init_keyboard();
-   
-    screen_put_hex ( ( uint32_t ) &kernel_main );
-    screen_putc ( '\n' );
-    ptr = ( uint32_t* ) 0xB0000000;
-    screen_put_hex ( *ptr );
-    screen_puts ( "\nShould now be 0xFFF: " );
-    *ptr = 0xFFF;
-    screen_put_hex ( *ptr );
-    screen_puts ( "\n" );
-    ptr += 1024 * 1024 - 1;
-    screen_put_hex ( *ptr );
 
-    init_pmm( 0xB0000000 );
-    screen_puts ( "\nOkay, PMM enabled!\n" );
-    init_vmm();
-    screen_puts ( "\nOkay, VMM enabled!\n" );
+    screen_puts("kernel_main at "); screen_put_hex ( ( uint32_t ) &kernel_main ); screen_putc ( '\n' );
 
-    screen_put_hex ( ( uint32_t ) &kernel_main );
-    screen_putc ( '\n' );
-    ptr = ( uint32_t* ) 0xB0000000;
+    init_pmm( 0xD0000000 ); screen_puts ( "PMM enabled!\n" );    
+    init_vmm(mboot_ptr); screen_puts ( "VMM enabled!\n" );
+
+    screen_puts ( "Adding physical frames to PMM ... " );
+    mem = pmm_grab_physical_memory(mboot_ptr); screen_puts ( "added [" ); screen_put_uint(mem); screen_puts(" bytes / ~"); screen_put_uint(mem/(1024*1024)); screen_puts(" MB / ~");  screen_put_uint(mem/(1024*1024*1024)); screen_puts(" GB]\n");
+
+    #if 0
+    ptr = ( uint32_t* ) 0xD0000000;
     screen_put_hex ( *ptr );
     screen_puts ( "\nShould now be 0xFFF: " );
     *ptr = 0xFFF;
@@ -72,11 +51,14 @@ int CDECL kernel_main ( multiboot_t* mboot_ptr )
     ptr += 1024 * 1024 - 1;
     screen_put_hex ( *ptr );
     screen_puts ( "\n" );
+    #endif
+
+    screen_puts ( "Result of requesting physical PMM block: " ); screen_put_hex ( pmm_alloc_block(false) ); screen_puts ( "\n" );
     
-/*    pmm_initial_free_page_setup_HACK();*/
-/*    screen_put_hex ( pmm_alloc_block() );*/
-    screen_puts ( "\n" );
+    build_elf_symbols_from_multiboot(mboot_ptr); screen_puts("Kernel symbols loaded!\n");
+
     __asm ( "sti" );
+    kpanic("Fuck yeah");
     for ( ;; ); /* NOTE: Never return from kernel, We'll segfault */
     return 0xDEADBABA; /* Should be in $eax right now */
 }

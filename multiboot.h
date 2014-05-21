@@ -24,10 +24,17 @@ typedef struct
   uint32_t cmdline;
   uint32_t mods_count;
   uint32_t mods_addr;
-  uint32_t num;   /* ELF: Number of sections */
-  uint32_t size;
-  uint32_t addr;  /* ELF: Pointer to start of array of section header structures */
-  uint32_t shndx; /* ELF: Index to section .shstrtab in the ection header structures array */
+
+  /* 
+     These are valid when bit 5 in flags is set. We assume it is.
+     They are relative to section info
+   */
+  uint32_t shdr_num;   /* ELF: Number of sections */
+  uint32_t shdr_size;  /* ELF: Size of each section eytr */
+  uint32_t shdr_addr;  /* ELF: Pointer to start of array of section header structures */
+  uint32_t shndx;      /* ELF: Index to section .shstrtab in thes ection header structures array */
+
+
   uint32_t mmap_length;
   uint32_t mmap_addr;
   uint32_t drives_length;
