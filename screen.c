@@ -125,6 +125,19 @@ PRIVATE void fast_string_reverse (char* s, uint32_t len) {
         
 }
 
+void screen_put_uint(uint32_t n) {
+        char array[] = "0123456789";
+        char str[30]={0};
+        char* p = str;
+        
+        do {
+                *p++ = array[ n % 10 ];
+                n /= 10;
+        } while ( n > 0 );
+        
+        fast_string_reverse(str, p-str);
+        screen_puts(str);
+}
 void screen_put_int(int32_t n)
 {
         char array[] = "0123456789";
