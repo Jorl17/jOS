@@ -165,7 +165,7 @@ BootPageDirectory:
 
     ; Add null pages until we reach the PMM page number
     times (PMM_PAGE_NUMBER - KERNEL_PAGE_NUMBER - 1) dd 0                       ; Pages before PMM space.
-    dd 0xD0000083     ; This page directory entry identity-maps the 4MB starting at 0xB0000000
+    dd 0xD0000083     ; This page directory entry identity-maps the 4MB starting at 0xD0000000
 
     ; Add the remaining pages until we've filled the Page Directory
     ; (Remember a page directory is an array of 1024 page tables)
